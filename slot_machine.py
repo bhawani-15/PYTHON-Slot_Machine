@@ -10,12 +10,26 @@ symbol_count = {
     'C': 6,
     'D': 8
 }
-symbol_count = {
+symbol_value = {
     'A': 15,
     'B': 12,
     'C': 8,
     'D': 5
 }
+
+def check_winnings(columns,lines,bet,values):
+    winnings = 0
+    winning_lines = []
+    for line in range(lines):
+        symbol = columns[0][line]
+        for column in columns:
+            symbol_to_check = column[line]
+            if symbol != symbol_to_check:
+                break
+        else:
+            winnings += values[symbol]*bet
+            winning_lines.append(line + 1)
+    return winnings,winning_lines
 
 def get_slot_machine_spin(rows,cols,symbols):
     all_symbols = []
@@ -92,12 +106,21 @@ def spin(balance):
     print(f"You are betting total of Rs.{total_bet} with Rs.{bet} on each of {lines} lines.")
     slots = get_slot_machine_spin(ROWS,COLS, symbol_count)
     print_slot_machine(slots)
+    winnings , winning_lines = check_winnings(slots,lines,bet,symbol_value)
+    print(f"You won Rs.{winnings} .")
+    print(f"You won on lines:" , *winning_lines)
+    return winnings-total_bet
 
 
 
 def main():
     balance = get_deposit()
-    line = get_No_of_Lines()
-    print(balance,line)
+    while True:
+        print(f"Current balance is Rs.{balance}")
+        answer = input("Press enter to play(q to quit game).")
+        if answer == 'q':
+            break
+        balance += spin(balance)
+    print(f"You left with Rs.{balance} .")
 
 main()
